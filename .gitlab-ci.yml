@@ -1,0 +1,26 @@
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  image: maven:3.8.4-openjdk-11
+  stage: build
+  script:
+    - mvn clean package
+  artifacts:
+    paths:
+      - target/*.jar
+
+test:
+  image: maven:3.8.4-openjdk-11
+  stage: test
+  script:
+    - mvn test
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Deploying application..."
+    - docker build -t todolist-api .
+    - docker run -d -p 8080:8080 todolist-api
